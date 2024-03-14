@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.cs4520.assignment4.Database.Product
 import com.cs4520.assignment4.databinding.ProductItemBinding
 
-class ProductViewAdapter(private val products: List<Product>) :
+class ProductViewAdapter(private val products: MutableList<Product>) :
     RecyclerView.Adapter<ProductViewAdapter.ProductViewHolder>() {
     class ProductViewHolder(binding: ProductItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -27,14 +28,21 @@ class ProductViewAdapter(private val products: List<Product>) :
                 expiryDateTextView.text = itemView.context.getString(R.string.expires,product.expiryDate)
             }
 
-            val (backgroundColor, imageResId) = when (product) {
-                is Product.Equipment -> Pair("#E06666", R.drawable.hammer)
-                is Product.Food -> Pair("#FFD965", R.drawable.tomato)
+            val (backgroundColor, imageResId) = when (product.type) {
+                 "Equipment" -> Pair("#E06666", R.drawable.hammer)
+                 "Food" -> Pair("#FFD965", R.drawable.tomato)
+                else -> {Pair("#FFFFFF", R.drawable.hammer)}
             }
 
             itemView.setBackgroundColor(Color.parseColor(backgroundColor))
             productImageView.setImageResource(imageResId)
         }
+    }
+
+    fun updateProducts(newProducts: List<Product>) {
+        products.clear()
+        products.addAll(newProducts)
+        notifyItemInserted(products.size)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -44,10 +52,10 @@ class ProductViewAdapter(private val products: List<Product>) :
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(listOfProducts[position])
+        holder.bind(products[position])
     }
 
     override fun getItemCount(): Int {
-        return listOfProducts.size
+        return products.size
     }
 }
