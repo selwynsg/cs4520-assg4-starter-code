@@ -18,4 +18,8 @@ interface ProductListDao {
     @Query("DELETE FROM products")
     suspend fun deleteAllProducts()
 
+    @Query("SELECT * FROM products")
+    suspend fun getProductsList(): List<Product>
+
+
 }

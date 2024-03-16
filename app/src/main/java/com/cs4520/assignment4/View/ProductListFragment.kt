@@ -1,13 +1,14 @@
 package com.cs4520.assignment4.View
 
-import com.cs4520.assignment4.ViewModel.ProductViewModel
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cs4520.assignment4.ViewModel.ProductViewModel
 import com.cs4520.assignment4.databinding.ProductListFragmentBinding
 
 class ProductListFragment : Fragment() {
@@ -15,8 +16,6 @@ class ProductListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel : ProductViewModel
-
-    private lateinit var adapter: ProductViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,24 +26,27 @@ class ProductListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d("onviewcreated", "stupid filth")
         super.onViewCreated(view, savedInstanceState)
-        adapter = ProductViewAdapter(mutableListOf())
         binding.myRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.myRecyclerView.adapter = adapter
         viewModel =  ViewModelProvider(this)[ProductViewModel::class.java]
+        viewModel.fetchProducts()
+
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            Log.d("onviewcreated", "stupid filth")
         }
-        viewModel.fetchProducts()
+
         viewModel.result.observe(viewLifecycleOwner) { products ->
                 if (products.isEmpty()) {
+                    Log.d("onviewcreated", "stupid filth")
                     binding.myRecyclerView.visibility = View.GONE
                     binding.noProductsTextView.visibility = View.VISIBLE
                 } else {
                     binding.myRecyclerView.visibility = View.VISIBLE
                     binding.noProductsTextView.visibility = View.GONE
-                    adapter.updateProducts(products)
                 }
+            binding.myRecyclerView.adapter = ProductViewAdapter(products)
             }
 
 

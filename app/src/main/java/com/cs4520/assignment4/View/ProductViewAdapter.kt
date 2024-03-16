@@ -11,7 +11,7 @@ import com.cs4520.assignment4.Database.Product
 import com.cs4520.assignment4.R
 import com.cs4520.assignment4.databinding.ProductItemBinding
 
-class ProductViewAdapter(private val products: MutableList<Product>) :
+class ProductViewAdapter(private val products: List<Product>) :
     RecyclerView.Adapter<ProductViewAdapter.ProductViewHolder>() {
     class ProductViewHolder(binding: ProductItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -39,12 +39,6 @@ class ProductViewAdapter(private val products: MutableList<Product>) :
             itemView.setBackgroundColor(Color.parseColor(backgroundColor))
             productImageView.setImageResource(imageResId)
         }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateProducts(newProducts: List<Product>) {
-        products.addAll(newProducts)
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
