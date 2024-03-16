@@ -8,7 +8,8 @@ data class Product(
      val name : String,
      val type: String,
      val expiryDate : String?,
-     val price: Int,
-     @PrimaryKey(autoGenerate = false) val id: Int? = null
+     val price: Double,
+     @PrimaryKey(autoGenerate = true) val id: Int? = null
 )
+
 

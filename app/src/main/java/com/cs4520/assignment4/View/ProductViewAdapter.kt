@@ -1,4 +1,5 @@
-package com.cs4520.assignment4
+package com.cs4520.assignment4.View
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cs4520.assignment4.Database.Product
+import com.cs4520.assignment4.R
 import com.cs4520.assignment4.databinding.ProductItemBinding
 
 class ProductViewAdapter(private val products: MutableList<Product>) :
@@ -39,10 +41,10 @@ class ProductViewAdapter(private val products: MutableList<Product>) :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateProducts(newProducts: List<Product>) {
-        products.clear()
         products.addAll(newProducts)
-        notifyItemInserted(products.size)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
