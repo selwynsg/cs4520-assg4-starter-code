@@ -1,23 +1,30 @@
 package com.cs4520.assignment4.Repo
 
 import android.app.Application
-import androidx.lifecycle.LiveData
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.cs4520.assignment4.API.ProductAPIFactory
 import com.cs4520.assignment4.Database.Product
 import com.cs4520.assignment4.Database.ProductDatabase
 import com.cs4520.assignment4.Database.ProductListDao
-import kotlinx.coroutines.CoroutineScope
+import com.cs4520.assignment4.Worker.ProductWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 class ProductRepo(application: Application) {
     private var productListDao: ProductListDao
     private val productAPI = ProductAPIFactory.makeRetrofitService()
     private val database = ProductDatabase.getInstance(application)
 
+
     init {
         productListDao = database.productListDao()
     }
+
 
 
     private suspend fun insertProducts(products: List<Product>) {

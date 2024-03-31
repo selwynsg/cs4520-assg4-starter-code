@@ -1,50 +1,67 @@
 package com.cs4520.assignment4
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.EditText
+
+
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.cs4520.assignment4.databinding.LoginFragmentBinding
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
+@Composable
+fun LoginScreen(navController: NavController) {
+    val context = LocalContext.current
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
-class LoginFragment : Fragment() {
-    private var _binding: LoginFragmentBinding? = null
-    private val binding get() = _binding!!
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = LoginFragmentBinding.inflate(layoutInflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-            binding.loginButton.setOnClickListener {
-                val username = binding.userInput
-                val password = binding.password
-                Log.d("LoginFragment", "Username entered: $username and Pass $password")
-                if (username.text.toString() == "admin" && password.text.toString() == "admin") {
-                    findNavController().navigate(R.id.action_loginFragment_to_productListFragment)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("Username") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth()
+        )
+        Button(
+            onClick = {
+                if (username == "admin" && password == "admin") {
+                    navController.navigate("productList")
                 } else {
                     Toast.makeText(context, "Incorrect username or password", Toast.LENGTH_SHORT).show()
+                    username = ""
+                    password = ""
+
                 }
-                username.text.clear()
-                password.text.clear()
-            }
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "Login")
         }
     }
-
-
-
-
-
-
-
-
-
+}

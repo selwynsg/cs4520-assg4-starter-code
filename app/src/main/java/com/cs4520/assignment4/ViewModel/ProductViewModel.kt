@@ -4,10 +4,19 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.cs4520.assignment4.Database.Product
 import com.cs4520.assignment4.Repo.ProductRepo
+import com.cs4520.assignment4.Worker.ProductWorker
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 
 class ProductViewModel(application: Application) : AndroidViewModel(application) {
@@ -18,6 +27,23 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
     val loading: LiveData<Boolean> = _loading
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
+    private val workManager = WorkManager.getInstance(application)
+
+    init{
+        scheduleProductWorker()
+    }
+    private fun scheduleProductWorker() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val workRequest = PeriodicWorkRequestBuilder<ProductWorker>(repeatInterval = 1,
+            repeatIntervalTimeUnit = TimeUnit.HOURS).setConstraints(constraints).build()
+        workManager.enqueueUniquePeriodicWork("UpdateProduct",
+            ExistingPeriodicWorkPolicy.UPDATE,
+            workRequest)
+
+    }
 
     fun fetchProducts(page: Int? = null) {
         _loading.value = true
@@ -31,5 +57,15 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
                 _error.postValue(exception.message)
             }
         }
+    }
+}
+
+class MyViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ProductViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ProductViewModel(application) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
