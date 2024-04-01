@@ -30,13 +30,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.cs4520.assignment4.Database.Product
 import com.cs4520.assignment4.R
 import com.cs4520.assignment4.ViewModel.ProductViewModel
 
 
 @Composable
-fun ProductListScreen(viewModel: ProductViewModel = viewModel()) {
+fun ProductListScreen(navController: NavHostController, viewModel: ProductViewModel = viewModel()) {
     val products by viewModel.result.observeAsState(emptyList())
     val isLoading by viewModel.loading.observeAsState(false)
     val errorMessage by viewModel.error.observeAsState()
